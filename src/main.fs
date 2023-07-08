@@ -30,10 +30,7 @@ module App =
                 else
                     model.todos |> List.maxBy (fun t -> t.id) |> (fun t -> t.id + 1)
 
-            { model with
-                todos = { id = id; title = title } :: model.todos
-            },
-            Cmd.none
+            { model with todos = { id = id; title = title } :: model.todos }, Cmd.none
 
         | DeleteTodo id ->
             let todos = model.todos |> List.filter (fun t -> t.id <> id)
@@ -65,12 +62,10 @@ module App =
                                 decoration = InputDecoration(hintText = "Enter task here")
                             ),
                         actions =
-                            [|
-                                MaterialButton(
-                                    child = Text("CANCEL"),
-                                    onPressed = fun () -> Navigator.``of``(context).pop ()
-                                )
-                            |]
+                            [| MaterialButton(
+                                   child = Text("CANCEL"),
+                                   onPressed = fun () -> Navigator.``of``(context).pop ()
+                               ) |]
                     ))
         )
 
@@ -81,17 +76,15 @@ module App =
                 ListTile(
                     title =
                         Row
-                            [|
-                                Expanded(Text(t.title))
-                                IconButton(
-                                    icon = Icon(Icons.edit),
-                                    onPressed =
-                                        fun () ->
-                                            let dispatch text = EditTodo(t.id, text) |> dispatch
-                                            displayDialog t.title dispatch context |> ignore
-                                )
-                                IconButton(icon = Icon(Icons.delete), onPressed = fun () -> DeleteTodo t.id |> dispatch)
-                            |]
+                            [| Expanded(Text(t.title))
+                               IconButton(
+                                   icon = Icon(Icons.edit),
+                                   onPressed =
+                                       fun () ->
+                                           let dispatch text = EditTodo(t.id, text) |> dispatch
+                                           displayDialog t.title dispatch context |> ignore
+                               )
+                               IconButton(icon = Icon(Icons.delete), onPressed = fun () -> DeleteTodo t.id |> dispatch) |]
                 )
                 :> Widget)
             |> List.toArray
@@ -103,11 +96,9 @@ module App =
             appBar = AppBar(title = Text("F# loves Flutter")),
             body =
                 Row
-                    [|
-                        Expanded(flex = 1, child = SizedBox.shrink ())
-                        Expanded(flex = 2, child = buildTodos model dispatch context)
-                        Expanded(flex = 1, child = SizedBox.shrink ())
-                    |],
+                    [| Expanded(flex = 1, child = SizedBox.shrink ())
+                       Expanded(flex = 2, child = buildTodos model dispatch context)
+                       Expanded(flex = 1, child = SizedBox.shrink ()) |],
             floatingActionButton =
                 FloatingActionButton(
                     child = Icon(Icons.task),
@@ -122,6 +113,11 @@ type MyApp(?key: Key) =
     inherit StatelessWidget(?key = key)
 
     override _.build(context) =
-        MaterialApp(title = "Welcome to Flutter", home = ElmishWidget.From(init, update, view), debugShowCheckedModeBanner= false)
+        MaterialApp(
+            title = "Welcome to Flutter",
+            home = ElmishWidget.From(init, update, view),
+            debugShowCheckedModeBanner = false,
+            theme = ThemeData(useMaterial3 = true)
+        )
 
 let main () = MyApp() |> runApp
